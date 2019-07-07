@@ -129,11 +129,13 @@ uploadButton.addEventListener('change', onUploadChange);
 
 // изменение масштаба фото
 
+var SCALE_STEP = 25;
+
 var scaleSmallerButton = photoEditForm.querySelector('.scale__control--smaller');
 var scaleBiggerButton = photoEditForm.querySelector('.scale__control--bigger');
 var scaleControlValueContainer = photoEditForm.querySelector('.scale__control--value');
 var scaleControlValue = parseInt(scaleControlValueContainer.value.slice(0, -1), 10);
-var photoUploadPreview = photoEditForm.querySelector('.img-upload__preview img');
+var photoUploadPreview = photoEditForm.querySelector('.img-upload__preview');
 
 var setScale = function () {
   var scaleNum = scaleControlValue / 100;
@@ -141,10 +143,10 @@ var setScale = function () {
 };
 
 var onScaleSmallerClick = function () {
-  if ((scaleControlValue - 25) < 0) {
-    scaleControlValue = 0;
+  if ((scaleControlValue - SCALE_STEP) <= 0) {
+    scaleControlValue = scaleControlValue;
   } else {
-    scaleControlValue = scaleControlValue - 25;
+    scaleControlValue = scaleControlValue - SCALE_STEP;
   }
 
   setScale();
@@ -152,10 +154,10 @@ var onScaleSmallerClick = function () {
 };
 
 var onScaleBiggerClick = function () {
-  if ((scaleControlValue + 25) > 100) {
+  if ((scaleControlValue + SCALE_STEP) > 100) {
     scaleControlValue = 100;
   } else {
-    scaleControlValue = scaleControlValue + 25;
+    scaleControlValue = scaleControlValue + SCALE_STEP;
   }
 
   setScale();

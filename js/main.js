@@ -113,7 +113,7 @@ var openUpload = function () {
 };
 
 var onUploadEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
+  if (evt.keyCode === ESC_KEYCODE && !evt.target.classList.contains('text__description')) {
     closeUpload();
   }
 };

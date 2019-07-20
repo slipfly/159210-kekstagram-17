@@ -217,4 +217,56 @@ var onEffectListClick = function (evt) {
   }
 };
 
+// обработчик слайдера
 
+var putEffect = function () {
+  var depthValue = calculatePercents(sliderPin, sliderLevelLine.offsetWidth);
+
+  currentEffect = photoEditForm.querySelector('input:checked').value;
+
+  var effects = {
+    none: '',
+    chrome: 'grayscale(' + depthValue + ')',
+    sepia: 'sepia(' + depthValue + ')',
+    marvin: 'invert(' + (depthValue * 100) + '%)',
+    phobos: 'blur(' + (depthValue * 3) + 'px)',
+    heat: 'brightness(' + (depthValue * 3) + ')'
+  };
+
+  photoPreview.style.filter = effects[currentEffect];
+};
+
+sliderPin.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var startCoordX = evt.clientX;
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = startCoordX - moveEvt.clientX;
+
+    startCoordX = moveEvt.clientX;
+
+    var newCoordX = sliderPin.offsetLeft - shift;
+
+    if (newCoordX > 0 && newCoordX < sliderLevelLine.offsetWidth) {
+      sliderPin.style.left = newCoordX + 'px';
+      sliderLevelDepth.style.width = newCoordX + 'px';
+    }
+
+    putEffect();
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    putEffect();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});

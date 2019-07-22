@@ -171,6 +171,7 @@ var effectList = photoEditForm.querySelector('.effects__list');
 var photoPreview = document.querySelector('.img-upload__preview');
 var sliderLevelLineWidth = sliderLevelLine.offsetWidth;
 var currentEffect = 'none';
+var effectLevelValue = photoEditForm.querySelector('.effect-level__value');
 
 var calculatePercents = function (pin, maxWidth) {
   return (pin.style.left.slice(0, -2)) / maxWidth;
@@ -197,7 +198,7 @@ var onEffectListClick = function (evt) {
       sliderEffectLevel.classList.remove('visually-hidden');
     }
 
-    var depthValue = calculatePercents(sliderPin, sliderLevelLineWidth);
+    var depthValue = sliderLevelLine.offsetWidth;
 
     var effects = {
       none: '',
@@ -208,8 +209,8 @@ var onEffectListClick = function (evt) {
       heat: 'brightness(' + (depthValue * 3) + ')'
     };
 
-    sliderLevelDepth.style.width = '91px';
-    sliderPin.style.left = '91px';
+    sliderLevelDepth.style.width = depthValue + 'px';
+    sliderPin.style.left = depthValue + 'px';
 
 
     photoPreview.classList.add('effects__preview--' + currentEffect);
@@ -234,6 +235,7 @@ var putEffect = function () {
   };
 
   photoPreview.style.filter = effects[currentEffect];
+  effectLevelValue.value = Math.round(depthValue * 100);
 };
 
 sliderPin.addEventListener('mousedown', function (evt) {

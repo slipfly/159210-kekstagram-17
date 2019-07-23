@@ -171,6 +171,7 @@ var effectList = photoEditForm.querySelector('.effects__list');
 var photoPreview = document.querySelector('.img-upload__preview');
 var sliderLevelLineWidth = sliderLevelLine.offsetWidth;
 var currentEffect = 'none';
+var effectLevelValue = photoEditForm.querySelector('.effect-level__value');
 
 var calculatePercents = function (pin, maxWidth) {
   return (pin.style.left.slice(0, -2)) / maxWidth;
@@ -197,7 +198,7 @@ var onEffectListClick = function (evt) {
       sliderEffectLevel.classList.remove('visually-hidden');
     }
 
-    var depthValue = calculatePercents(sliderPin, sliderLevelLineWidth);
+    var depthValue = sliderLevelLine.offsetWidth;
 
     var effects = {
       none: '',
@@ -208,8 +209,8 @@ var onEffectListClick = function (evt) {
       heat: 'brightness(' + (depthValue * 3) + ')'
     };
 
-    sliderLevelDepth.style.width = '91px';
-    sliderPin.style.left = '91px';
+    sliderLevelDepth.style.width = depthValue + 'px';
+    sliderPin.style.left = depthValue + 'px';
 
 
     photoPreview.classList.add('effects__preview--' + currentEffect);
@@ -217,4 +218,57 @@ var onEffectListClick = function (evt) {
   }
 };
 
+// обработчик слайдера
 
+var putEffect = function () {
+  var depthValue = calculatePercents(sliderPin, sliderLevelLine.offsetWidth);
+
+  currentEffect = photoEditForm.querySelector('input:checked').value;
+
+  var effects = {
+    none: '',
+    chrome: 'grayscale(' + depthValue + ')',
+    sepia: 'sepia(' + depthValue + ')',
+    marvin: 'invert(' + (depthValue * 100) + '%)',
+    phobos: 'blur(' + (depthValue * 3) + 'px)',
+    heat: 'brightness(' + (depthValue * 3) + ')'
+  };
+
+  photoPreview.style.filter = effects[currentEffect];
+  effectLevelValue.value = Math.round(depthValue * 100);
+};
+
+sliderPin.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var startCoordX = evt.clientX;
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = startCoordX - moveEvt.clientX;
+
+    startCoordX = moveEvt.clientX;
+
+    var newCoordX = sliderPin.offsetLeft - shift;
+
+    if (newCoordX > 0 && newCoordX < sliderLevelLine.offsetWidth) {
+      sliderPin.style.left = newCoordX + 'px';
+      sliderLevelDepth.style.width = newCoordX + 'px';
+    }
+
+    putEffect();
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    putEffect();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
